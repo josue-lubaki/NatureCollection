@@ -10,9 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.josue.naturecollection.MainActivity
 import ca.josue.naturecollection.R
 import ca.josue.naturecollection.model.PlantModel
+import ca.josue.naturecollection.repository.PlantRepository
 import com.bumptech.glide.Glide
 
-class PlantAdapter(private val context: MainActivity, private val plantList : List<PlantModel>, private val layoutId: Int) : RecyclerView.Adapter<PlantAdapter.ViewHolder>(){
+class PlantAdapter(
+    private val context: MainActivity,
+    private val plantList : List<PlantModel>,
+    private val layoutId: Int
+    ) : RecyclerView.Adapter<PlantAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater
@@ -23,6 +28,8 @@ class PlantAdapter(private val context: MainActivity, private val plantList : Li
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        // Récupèrer le repository
+        val repository  = PlantRepository()
         val currentPlant = plantList[position]
 
         // utiliser glide pour l'affichage des images
@@ -34,16 +41,25 @@ class PlantAdapter(private val context: MainActivity, private val plantList : Li
             holder.starIcon.setImageResource(R.drawable.ic_star)
         else
             holder.starIcon.setImageResource(R.drawable.ic_unstar)
+
+        // rajouter une intéaction sur l'étoile
+        holder.starIcon.setOnClickListener {
+            // Si le button est liked, il enleve le like, sinon il like
+            currentPlant.liked = !currentPlant.liked
+
+            // mettre à jour l'objet plant
+            repository.updatePlant(currentPlant)
+        }
     }
 
     override fun getItemCount(): Int = plantList.size
 
     // Boite pour ranger tous les composants à controller
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val plantImage = view.findViewById<ImageView>(R.id.image_item)
+        val plantImage: ImageView = view.findViewById(R.id.image_item)
         val plantName: TextView? = view.findViewById(R.id.name_item)
         val plantDescription: TextView? = view.findViewById(R.id.description_item)
-        val starIcon = view.findViewById<ImageView>(R.id.star_icon)
+        val starIcon: ImageView = view.findViewById(R.id.star_icon)
     }
 
 }
