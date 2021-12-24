@@ -63,7 +63,7 @@ class PlantPopup(
         findViewById<ImageView>(R.id.delete_button).setOnClickListener {
             // supprimer la plante de la base de données
             val repository = PlantRepository()
-            repository.deletPlant(currentPlant)
+            repository.deletePlant(currentPlant)
             dismiss()
         }
     }

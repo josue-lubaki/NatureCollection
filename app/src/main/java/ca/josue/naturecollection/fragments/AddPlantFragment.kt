@@ -17,6 +17,7 @@ import ca.josue.naturecollection.R
 import ca.josue.naturecollection.model.PlantModel
 import ca.josue.naturecollection.repository.PlantRepository
 import ca.josue.naturecollection.repository.PlantRepository.Singleton.downloadUri
+import ca.josue.naturecollection.repository.PlantRepository.Singleton.fileName
 import java.util.*
 
 class AddPlantFragment(
@@ -75,6 +76,7 @@ class AddPlantFragment(
                 plantName,
                 plantDescription,
                 downloadUrl,
+                fileName,
                 false,
                 grow,
                 water

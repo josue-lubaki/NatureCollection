@@ -4,6 +4,7 @@ import android.net.Uri
 import ca.josue.naturecollection.model.PlantModel
 import ca.josue.naturecollection.repository.PlantRepository.Singleton.databaseRef
 import ca.josue.naturecollection.repository.PlantRepository.Singleton.downloadUri
+import ca.josue.naturecollection.repository.PlantRepository.Singleton.fileName
 import ca.josue.naturecollection.repository.PlantRepository.Singleton.plantList
 import ca.josue.naturecollection.repository.PlantRepository.Singleton.storageRef
 import com.google.firebase.database.DataSnapshot
@@ -29,6 +30,7 @@ class PlantRepository {
         val plantList = arrayListOf<PlantModel>()
 
         lateinit var downloadUri : Uri
+        lateinit var fileName : String
     }
 
     /**
@@ -79,7 +81,8 @@ class PlantRepository {
      * Function qui permet de supprimer une plante en particulier
      * @param plant : la plante à supprimer
      * */
-    fun deletPlant(plant : PlantModel){
+    fun deletePlant(plant : PlantModel){
+        deleteImage(plant)
         databaseRef.child(plant.id).removeValue()
     }
 
@@ -89,16 +92,24 @@ class PlantRepository {
      * @param callback l'Action à éxecuter après la reussite de la sauvergarde
      * */
     fun uploadImage(file: Uri, callback: () -> Unit){
-        val fileName = UUID.randomUUID().toString() + ".jpg"
+        fileName = UUID.randomUUID().toString() + ".jpg"
         val ref = storageRef.child(fileName)
         ref.putFile(file).addOnSuccessListener { taskSnapshot ->
             taskSnapshot.storage.downloadUrl.addOnSuccessListener {
                 downloadUri = it
                 callback()
             }
-        }.addOnFailureListener { e ->
-                print(e.message)
+        }.addOnFailureListener {
+                print(it.message)
             }
+    }
+
+    /**
+     * Methode qui permet de supprimer l'image d'une plante
+     * */
+    private fun deleteImage(plantTodDelete: PlantModel){
+        val fileName = plantTodDelete.fileName
+        storageRef.child(fileName).delete()
     }
 
 }
