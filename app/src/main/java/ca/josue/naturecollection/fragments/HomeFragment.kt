@@ -26,8 +26,6 @@ class HomeFragment(private val context : MainActivity) : Fragment() {
         verticalRecyclerView.adapter = PlantAdapter(context, plantList, R.layout.item_vertical_plant)
         verticalRecyclerView.addItemDecoration(PlantItemDecoration())
 
-
-
         return view
     }
 
