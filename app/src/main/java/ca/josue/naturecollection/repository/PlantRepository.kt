@@ -1,21 +1,34 @@
 package ca.josue.naturecollection.repository
 
+import android.net.Uri
 import ca.josue.naturecollection.model.PlantModel
 import ca.josue.naturecollection.repository.PlantRepository.Singleton.databaseRef
+import ca.josue.naturecollection.repository.PlantRepository.Singleton.downloadUri
 import ca.josue.naturecollection.repository.PlantRepository.Singleton.plantList
+import ca.josue.naturecollection.repository.PlantRepository.Singleton.storageRef
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import java.util.*
 
 class PlantRepository {
 
     object Singleton{
+        // donner le lien pour acceder au bucket
+        private const val BUCKET_URL: String = "gs://naturecollection-7a6b8.appspot.com"
+
+        // Se connecter à l'espace de stockage
+        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(BUCKET_URL)
+
         // Se connecter à la référence "Plants" de Firebase
         val databaseRef = FirebaseDatabase.getInstance().getReference("plants")
 
         // créer une liste qui va contenir nos plantes
         val plantList = arrayListOf<PlantModel>()
+
+        lateinit var downloadUri : Uri
     }
 
     /**
@@ -57,6 +70,12 @@ class PlantRepository {
     fun updatePlant(plant : PlantModel) = databaseRef.child(plant.id).setValue(plant)
 
     /**
+     * Function qui permet d'inserer une plante
+     * @param plant : la plante à insérer
+     * */
+    fun insertPlant(plant : PlantModel) = databaseRef.child(plant.id).setValue(plant)
+
+    /**
      * Function qui permet de supprimer une plante en particulier
      * @param plant : la plante à supprimer
      * */
@@ -64,4 +83,23 @@ class PlantRepository {
         databaseRef.child(plant.id).removeValue()
     }
 
+    /**
+     * Methode qui permet d'evoyer le fichier dans l'espace de stockage
+     * @param file le path où se trouve l'image dans le telephone
+     * @param callback l'Action à éxecuter après la reussite de la sauvergarde
+     * */
+    fun uploadImage(file: Uri, callback: () -> Unit){
+        val fileName = UUID.randomUUID().toString() + ".jpg"
+        val ref = storageRef.child(fileName)
+        ref.putFile(file).addOnSuccessListener { taskSnapshot ->
+            taskSnapshot.storage.downloadUrl.addOnSuccessListener {
+                downloadUri = it
+                callback()
+            }
+        }.addOnFailureListener { e ->
+                print(e.message)
+            }
+    }
+
 }
+

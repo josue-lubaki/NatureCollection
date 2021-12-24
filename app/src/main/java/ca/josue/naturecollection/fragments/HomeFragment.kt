@@ -19,7 +19,7 @@ class HomeFragment(private val context : MainActivity) : Fragment() {
 
         // récupérer le RecyclerView
         val horizontalRecyclerView = view.findViewById<RecyclerView>(R.id.horizontal_recyclerview)
-        horizontalRecyclerView.adapter = PlantAdapter(context, plantList, R.layout.item_horizontal_plant)
+        horizontalRecyclerView.adapter = PlantAdapter(context, plantList.filter { !it.liked }, R.layout.item_horizontal_plant)
 
         // récupérer le second recycleview
         val verticalRecyclerView = view.findViewById<RecyclerView>(R.id.vertical_recyclerview)
