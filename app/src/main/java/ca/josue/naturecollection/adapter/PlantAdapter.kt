@@ -55,7 +55,7 @@ class PlantAdapter(
         // interaction lors du clic sur une plante
         holder.itemView.setOnClickListener{
             // afficher la popup
-            PlantPopup(this).show()
+            PlantPopup(this, currentPlant).show()
         }
     }
 

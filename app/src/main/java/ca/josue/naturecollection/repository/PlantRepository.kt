@@ -56,4 +56,12 @@ class PlantRepository {
      * */
     fun updatePlant(plant : PlantModel) = databaseRef.child(plant.id).setValue(plant)
 
+    /**
+     * Function qui permet de supprimer une plante en particulier
+     * @param plant : la plante à supprimer
+     * */
+    fun deletPlant(plant : PlantModel){
+        databaseRef.child(plant.id).removeValue()
+    }
+
 }
