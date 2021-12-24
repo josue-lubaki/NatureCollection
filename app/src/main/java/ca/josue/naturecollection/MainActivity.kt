@@ -2,6 +2,7 @@ package ca.josue.naturecollection
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import ca.josue.naturecollection.fragments.AddPlantFragment
 import ca.josue.naturecollection.fragments.CollectionFragment
 import ca.josue.naturecollection.fragments.HomeFragment
 import ca.josue.naturecollection.repository.PlantRepository
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         repository.updateData {
             // injecter le fragment dans notre boite
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, CollectionFragment(this))
+            transaction.replace(R.id.fragment_container, AddPlantFragment(this))
             transaction.addToBackStack(null) // annuler le retour vers ce composant
             transaction.commit()
         }
